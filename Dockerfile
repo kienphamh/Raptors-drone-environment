@@ -11,13 +11,16 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-# X11 and GUI
+# X11 and GUI 
 RUN apt-get update && apt-get install -y \
     x11-apps \
     mesa-utils \
-    libgl1-mesa-glx \
+    libgl1 \
+    libglx-mesa0 \
+    libegl1-mesa \
     libgl1-mesa-dri \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Gazebo
 RUN apt-get update && apt-get install -y \
