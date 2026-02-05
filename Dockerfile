@@ -45,12 +45,11 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     python3-dev \
     python3-opencv \
-    python3-wxgtk4.0 \
     python3-matplotlib \
     python3-lxml \
-    python3-pygame \
     libxml2-dev \
     libxslt1-dev \
+    && pip3 install --break-system-packages wxPython==4.2.1 --only-binary :all: \
     && rm -rf /var/lib/apt/lists/*
 
 # Mavproxy
