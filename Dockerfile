@@ -72,8 +72,11 @@ USER ardupilot
 WORKDIR /opt/ardupilot
 ENV USER=ardupilot
 ENV SKIP_PYTHON2=true
-RUN git clone --depth 1 --recurse-submodules https://github.com/ArduPilot/ardupilot.git . \
-    && git checkout Copter-4.5 \
+
+# Clone ArduPilot repository and install prerequisites
+RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git . \
+    && LATEST_TAG=$(git tag -l "Copter-*" --sort=-v:refname | head -n 1) \
+    && git checkout $LATEST_TAG \
     && Tools/environment_install/install-prereqs-ubuntu.sh -y
 
 # Add ArduPilot tools to PATH
