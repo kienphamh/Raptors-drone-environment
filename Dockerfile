@@ -71,6 +71,11 @@ WORKDIR /workspace
 
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
 
+COPY aliases/ /root/aliases/
+RUN chmod +x /root/aliases/*.sh && \
+    echo "# Load drone aliases" >> ~/.bashrc && \
+    echo "for f in /root/aliases/*.sh; do source \$f; done" >> ~/.bashrc
+
 # Set display for X11
 ENV DISPLAY=:0
 ENV QT_X11_NO_MITSHM=1
@@ -81,8 +86,7 @@ source /opt/ros/jazzy/setup.bash\n\
 if [ -f /workspace/install/setup.bash ]; then\n\
     source /workspace/install/setup.bash\n\
 fi\n\
-exec "$@"' > /entrypoint.sh \
-    && chmod +x /entrypoint.sh
+exec "$@"' > /entrypoint.sh && chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["bash"]
