@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     mesa-utils \
     libgl1 \
     libglx-mesa0 \
-    libegl1-mesa \
+    libegl1 \
     libgl1-mesa-dri \
     && rm -rf /var/lib/apt/lists/*
 
