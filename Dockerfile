@@ -24,10 +24,8 @@ RUN apt-get update && apt-get install -y \
 
 # Gazebo
 RUN apt-get update && apt-get install -y \
-    gz-harmonic \
-    ros-jazzy-ros-gz \
+    ros-jazzy-ros-gz-sim \
     && rm -rf /var/lib/apt/lists/*
-
 
 # MAVROS
 RUN apt-get update && apt-get install -y \
