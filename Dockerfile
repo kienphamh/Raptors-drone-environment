@@ -59,8 +59,8 @@ RUN pip3 install --break-system-packages \
     pymavlink
 
 # Ardupilot and its environment
-# Create a dedicated non-root user for ArduPilot
-RUN useradd -m -s /bin/bash ardupilot \
+# Create user and add to dialout before running script
+RUN useradd -m -s /bin/bash -G dialout ardupilot \
     && echo "ardupilot ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Prepare the ArduPilot folder
