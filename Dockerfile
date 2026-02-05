@@ -59,15 +59,29 @@ RUN pip3 install --break-system-packages \
     pymavlink
 
 # Ardupilot and its environment
-WORKDIR /opt
-RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git \
-    && cd ardupilot \
+# Create non-root user
+RUN useradd -m -s /bin/bash -G dialout ardupilot \
+    && echo "ardupilot ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Prepare ArduPilot folder
+RUN mkdir -p /opt/ardupilot \
+    && chown -R ardupilot:ardupilot /opt/ardupilot
+
+# Switch to non-root user to install ArduPilot environment
+USER ardupilot
+WORKDIR /opt/ardupilot
+
+RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git . \
     && git checkout Copter-4.5 \
-    && Tools/environment_install/install-prereqs-ubuntu.sh -y --no-sudo
+    && Tools/environment_install/install-prereqs-ubuntu.sh -y
 
 # Add ArduPilot tools to PATH
 ENV PATH="/opt/ardupilot/Tools/autotest:${PATH}"
 ENV PATH="/usr/lib/ccache:${PATH}"
+
+# Switch back to root for the rest of the Dockerfile
+USER root
+WORKDIR /opt
 
 RUN mkdir -p /workspace
 WORKDIR /workspace
