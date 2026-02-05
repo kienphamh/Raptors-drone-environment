@@ -74,8 +74,7 @@ ENV USER=ardupilot
 ENV SKIP_PYTHON2=true
 RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git . \
     && git checkout Copter-4.5 \
-    && sed -i '/python-argparse/d' Tools/environment_install/install-prereqs-ubuntu.sh \
-    && Tools/environment_install/install-prereqs-ubuntu.sh -y
+    && Tools/environment_install/install-prereqs-ubuntu.sh -y --skip-python2
 
 # Add ArduPilot tools to PATH
 ENV PATH="/opt/ardupilot/Tools/autotest:${PATH}"
