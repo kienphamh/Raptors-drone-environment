@@ -59,14 +59,17 @@ RUN pip3 install --break-system-packages \
     pymavlink
 
 # Ardupilot and its environment
-# Create a dedicated non-root user for ArduPilot
+# Create non-root user
 RUN useradd -m -s /bin/bash ardupilot \
-    && echo "ardupilot ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-    && chown -R ardupilot:ardupilot /opt
+    && echo "ardupilot ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Switch to the non-root user
+# Prepare ArduPilot folder
+RUN mkdir -p /opt/ardupilot \
+    && chown -R ardupilot:ardupilot /opt/ardupilot
+
+# Switch to non-root user
 USER ardupilot
-WORKDIR /opt
+WORKDIR /opt/ardupilot
 
 # Clone ArduPilot and run environment setup as non-root
 RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git \
