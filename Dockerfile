@@ -70,7 +70,7 @@ RUN mkdir -p /opt/ardupilot \
 # Switch to non-root user to install ArduPilot environment
 USER ardupilot
 WORKDIR /opt/ardupilot
-
+ENV USER=ardupilot
 RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git . \
     && git checkout Copter-4.5 \
     && Tools/environment_install/install-prereqs-ubuntu.sh -y
