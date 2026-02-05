@@ -59,21 +59,20 @@ RUN pip3 install --break-system-packages \
     pymavlink
 
 # Ardupilot and its environment
-# Create non-root user
+# Create a dedicated non-root user for ArduPilot
 RUN useradd -m -s /bin/bash ardupilot \
     && echo "ardupilot ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Prepare ArduPilot folder
+# Prepare the ArduPilot folder
 RUN mkdir -p /opt/ardupilot \
     && chown -R ardupilot:ardupilot /opt/ardupilot
 
-# Switch to non-root user
+# Switch to the non-root user
 USER ardupilot
 WORKDIR /opt/ardupilot
 
-# Clone ArduPilot and run environment setup as non-root
-RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git \
-    && cd ardupilot \
+# Clone ArduPilot and run environment setup as the user
+RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git . \
     && git checkout Copter-4.5 \
     && Tools/environment_install/install-prereqs-ubuntu.sh -y
 
