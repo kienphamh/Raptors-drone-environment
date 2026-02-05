@@ -1,41 +1,37 @@
-# Prerequisites
-*.d
+# ROS2 workspace
+workspace/build/
+workspace/install/
+workspace/log/
+**/build/
+**/install/
+**/log/
 
-# Compiled Object files
-*.slo
-*.lo
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# C++
 *.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
 *.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
 *.a
-*.lib
-
-# Executables
 *.exe
-*.out
-*.app
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
 
-# debug information files
-*.dwo
+# IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
