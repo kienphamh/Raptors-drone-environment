@@ -20,4 +20,4 @@ services:
      
 # GPU acceleration (optional) - Uncomment for better Gazebo performance
     # devices:
-    #   - /dev/dri:/dev/dri
+    #   - /dev/dri:/dev/drix
