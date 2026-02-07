@@ -27,6 +27,35 @@ RUN apt-get update && apt-get install -y \
     ros-jazzy-ros-gz-sim \
     && rm -rf /var/lib/apt/lists/*
 
+# Gazebo repo and packages for ArduPilot plugin
+RUN apt-get update && apt-get install -y \
+    lsb-release \
+    gnupg \
+    && wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null \
+    && apt-get update \
+    && apt-get install -y \
+        gz-harmonic \
+        libgz-cmake3-dev \
+        libgz-sim8-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# ArduPilot Gazebo plugin
+RUN apt-get update && apt-get install -y \
+    rapidjson-dev \
+    libopencv-dev \
+    libgstreamer1.0-dev \           
+    libgstreamer-plugins-base1.0-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone ardupilot_gazebo plugin
+RUN git clone https://github.com/ArduPilot/ardupilot_gazebo /opt/ardupilot_gazebo \
+    && cd /opt/ardupilot_gazebo \
+    && mkdir build && cd build \
+    && cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    && make -j$(nproc) \
+    && make install
+
 # MAVROS
 RUN apt-get update && apt-get install -y \
     ros-jazzy-mavros \
@@ -35,7 +64,7 @@ RUN apt-get update && apt-get install -y \
 
 
 # Install GeographicLib datasets for MAVROS
-RUN wget https://raw.githubusercontent.com/mavlink/mavros/master/mavros/scripts/install_geographiclib_datasets.sh \
+RUN wget https://raw.githubusercontent.com/mavlink/mavros/refs/heads/ros2/mavros/scripts/install_geographiclib_datasets.sh \
     && chmod +x install_geographiclib_datasets.sh \
     && ./install_geographiclib_datasets.sh \
     && rm install_geographiclib_datasets.sh
@@ -49,11 +78,15 @@ RUN apt-get update && apt-get install -y \
     python3-lxml \
     libxml2-dev \
     libxslt1-dev \
-    && pip3 install --break-system-packages wxPython==4.2.1 --only-binary :all: \
     && rm -rf /var/lib/apt/lists/*
 
+# Install wxPython for MAVProxy GUI
+RUN pip3 install --break-system-packages \
+    -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04 \
+    wxPython
+
 # Mavproxy
-RUN pip3 install --break-system-packages --no-deps \
+RUN pip3 install --break-system-packages \
     MAVProxy \
     pymavlink
 
@@ -82,9 +115,19 @@ RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git . 
 ENV PATH="/opt/ardupilot/Tools/autotest:${PATH}"
 ENV PATH="/usr/lib/ccache:${PATH}"
 
+
 # Switch back to root for the rest of the Dockerfile
 USER root
 WORKDIR /opt
+
+# Configure Git for root user
+RUN git config --global --add safe.directory /opt/ardupilot
+
+# Install ArduPilot Python build dependencies for root user
+RUN pip3 install --break-system-packages \
+    future \
+    empy \
+    pexpect
 
 RUN mkdir -p /workspace
 WORKDIR /workspace
@@ -96,6 +139,10 @@ RUN chmod +x /root/aliases/*.sh && \
     echo "# Load drone aliases" >> ~/.bashrc && \
     echo "for f in /root/aliases/*.sh; do source \$f; done" >> ~/.bashrc
 
+# Set environment variables
+ENV ARDUPILOT_HOME=/opt/ardupilot
+ENV FCU_URL="udp://:14550@"
+
 # Set display for X11
 ENV DISPLAY=:0
 ENV QT_X11_NO_MITSHM=1
@@ -103,6 +150,9 @@ ENV QT_X11_NO_MITSHM=1
 RUN echo '#!/bin/bash\n\
 set -e\n\
 source /opt/ros/jazzy/setup.bash\n\
+export GZ_VERSION=harmonic\n\
+export GZ_SIM_SYSTEM_PLUGIN_PATH=/usr/local/lib/ardupilot_gazebo\n\
+export GZ_SIM_RESOURCE_PATH=/opt/ardupilot_gazebo/models:/opt/ardupilot_gazebo/worlds\n\
 if [ -f /workspace/install/setup.bash ]; then\n\
     source /workspace/install/setup.bash\n\
 fi\n\
