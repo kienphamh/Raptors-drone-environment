@@ -7,7 +7,7 @@ start_ardupilot() {
 }
 
 start_gazebo() {
-    gz sim -v4 -r $GAZEBO_WORLD
+    gz sim -v4 -r iris_runway.sdf &
 }
 
 start_mavros() {
@@ -15,28 +15,6 @@ start_mavros() {
         -p fcu_url:=$FCU_URL \
         -p target_system_id:=1 \
         -p target_component_id:=1
-}
-
-start_all() {
-    echo "Starting the whole drone stack..."
-    
-    echo "Starting Gazebo..."
-    gz sim -v4 -r $GAZEBO_WORLD &
-    sleep 5
-    
-    echo "Starting ArduPilot SITL..."
-    cd $ARDUPILOT_HOME
-    sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --console &
-    sleep 10
-    
-    echo "Starting MAVROS..."
-    ros2 run mavros mavros_node --ros-args \
-        -p fcu_url:=$FCU_URL \
-        -p target_system_id:=1 \
-        -p target_component_id:=1 &
-    
-    echo "All components started!"
-    echo "Use 'arm' and 'takeoff <altitude>' to fly"
 }
 
 # Stop
@@ -47,20 +25,13 @@ stop_gazebo() {
 
 stop_ardupilot() {
     pkill -f "sim_vehicle"
+    pkill -f "xterm.*sim_vehicle"
     echo "ArduPilot stopped"
 }
 
 stop_mavros() {
     pkill -f "mavros_node"
     echo "MAVROS stopped"
-}
-
-stop_all() {
-    echo "Stopping all drone processes..."
-    pkill -f "gz sim"
-    pkill -f "sim_vehicle"
-    pkill -f "mavros_node"
-    echo "All processes stopped"
 }
 
 # Start only MAVROS (for hardware testing)
