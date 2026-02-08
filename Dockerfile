@@ -129,7 +129,7 @@ RUN pip3 install --break-system-packages \
     empy \
     pexpect
 
-RUN mkdir -p /workspace
+RUN mkdir -p /workspace/config
 WORKDIR /workspace
 
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
