@@ -2,6 +2,7 @@ services:
   drone-sim:
     build: .
     container_name: raptors-drone-dev
+    hostname: raptors-drone-dev
     stdin_open: true
     tty: true
     privileged: true
@@ -14,10 +15,14 @@ services:
       - XAUTHORITY=/tmp/.docker.xauth
     
     volumes:
-      - ./workspace:/workspace
+      - ./workspace/src:/workspace/src
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
-     
-# GPU acceleration (optional) - Uncomment for better Gazebo performance
-    # devices:
-    #   - /dev/dri:/dev/drix
+      - ardupilot_build:/opt/ardupilot/build
+
+    # GPU acceleration (optional) - Uncomment for better Gazebo performance
+      # devices:
+      #   - /dev/dri:/dev/drix
+
+volumes:
+  ardupilot_build:
