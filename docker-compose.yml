@@ -1,6 +1,6 @@
 services:
   drone-sim:
-    build: .
+    build: .devcontainer
     container_name: raptors-drone-dev
     hostname: raptors-drone-dev
     stdin_open: true
@@ -21,4 +21,4 @@ services:
 
     # GPU acceleration (optional) - Uncomment for better Gazebo performance
       # devices:
-      #   - /dev/dri:/dev/drix
+      #   - /dev/dri:/dev/dri
