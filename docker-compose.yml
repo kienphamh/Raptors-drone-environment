@@ -15,14 +15,10 @@ services:
       - XAUTHORITY=/tmp/.docker.xauth
     
     volumes:
-      - ./workspace/src:/workspace/src
+      - ./workspace:/workspace
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - /tmp/.docker.xauth:/tmp/.docker.xauth:rw
-      - ardupilot_build:/opt/ardupilot/build
 
     # GPU acceleration (optional) - Uncomment for better Gazebo performance
       # devices:
       #   - /dev/dri:/dev/drix
-
-volumes:
-  ardupilot_build:
