@@ -133,7 +133,7 @@ WORKDIR /workspace
 
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
 
-COPY aliases/ /root/aliases/
+# COPY aliases/ /root/aliases/
 RUN chmod +x /root/aliases/*.sh && \
     echo "# Load drone aliases" >> ~/.bashrc && \
     echo "for f in /root/aliases/*.sh; do source \$f; done" >> ~/.bashrc
