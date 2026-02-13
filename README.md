@@ -68,6 +68,12 @@ See the `.devcontainer/aliases/` directory for the full command reference.
 ## Customization
 - To enable GPU usage for Gazebo, uncomment the last 3 lines in `docker-compose.yml`.
 
+````bash
+  GPU acceleration (optional)
+    devices:
+      - /dev/dri:/dev/dri
+````
+
 ## Development workflow
 
 Mount your project into `workspace/src` on the host and build inside the container:
