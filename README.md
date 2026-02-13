@@ -23,6 +23,7 @@ A Docker development environment for the Raptors Drone Team. It bundles ROS2 (Ja
 1. Prepare X11 forwarding on the host:
 
 ```bash
+cd .devcontainer/
 sudo bash ./setup-x11.sh
 ```
 
@@ -39,6 +40,17 @@ docker exec -it raptors-drone-dev bash
 ```
 
 Run `help` or `h` inside the container to list provided helper aliases.
+
+## Verifying the Installation
+Once inside the container, test the setup:
+
+````bash
+start_gazebo
+start_ardupilot
+start_mavros
+status
+# Run these command on separate terminals
+````
 
 ## Common commands (aliases)
 
