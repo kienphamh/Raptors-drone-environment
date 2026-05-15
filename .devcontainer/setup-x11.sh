@@ -1,22 +1,36 @@
 #!/bin/bash
+
 XAUTH=/tmp/.docker.xauth
-echo "Setting up X11 forwarding for Docker..."
-touch $XAUTH
-chmod 666 $XAUTH
+
+echo "Preparing X11 forwarding for Docker..."
+
+if [ -d "$XAUTH" ]; then
+    echo "  -> Found directory at $XAUTH - Removing to fix Docker mount trap..."
+    sudo rm -rf "$XAUTH"
+fi
+
+if [ ! -f "$XAUTH" ]; then
+    touch "$XAUTH"
+    chmod 664 "$XAUTH"
+fi
+
 if [ -n "$DISPLAY" ]; then
+    # clear the file first to ensure no old cookies cause conflicts
+    > "$XAUTH" 
     xauth nlist "$DISPLAY" | sed -e 's/^..../ffff/' | xauth -f "$XAUTH" nmerge - 2>/dev/null
 else
-    echo " Warning: DISPLAY variable not set"
-    echo " X11 forwarding may not work"
+    echo " WARNING: DISPLAY variable not set. GUI apps will fail to launch!"
 fi
-xhost +local:docker 
+
+xhost +local:docker > /dev/null
+xhost +local:ardupilot > /dev/null
+
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "X11 forwarding has been enabled!"
+echo " X11 Forwarding is READY!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Next steps:"
-echo "  1. docker compose build"
-echo "  2. docker compose up -d"
-echo "  3. docker exec -it raptors-drone-dev bash"
+echo "  1. docker compose up -d"
+echo "  2. docker exec -it raptors-drone-dev bash"
 echo ""
