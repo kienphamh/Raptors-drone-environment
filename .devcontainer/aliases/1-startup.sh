@@ -1,40 +1,56 @@
 #!/bin/bash
 
-# Start
 start_ardupilot() {
-    cd $ARDUPILOT_HOME
-    sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
+    echo "Starting ArduPilot SITL..."
+    cd $ARDUPILOT_HOME/ArduCopter
+    sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console \
+        --out=udp:127.0.0.1:14550 \
+        --out=udp:127.0.0.1:14551
 }
 
 start_gazebo() {
+    echo "Starting Gazebo..."
     gz sim -v4 -r iris_runway.sdf &
 }
 
 start_mavros() {
+    echo "Starting MAVROS..."
     ros2 run mavros mavros_node --ros-args \
         -p fcu_url:=$FCU_URL \
         -p target_system_id:=1 \
         -p target_component_id:=1
 }
 
-# Stop
-stop_gazebo() {
+start_qgc() {
+    # Check if DISPLAY is actually set before trying to launch
+    if [ -z "$DISPLAY" ]; then
+        echo "Error: DISPLAY variable is not set. GUI will not launch."
+        return 1
+    fi
+
+    # Give the 'video' group access to the socket (Safer than 777)
+    chown :video /tmp/.X11-unix/X0 2>/dev/null
+    chmod 660 /tmp/.X11-unix/X0 2>/dev/null
+    
+    echo "Launching QGC on $DISPLAY..."
+    su - ardupilot -c "export DISPLAY=$DISPLAY; qgroundcontrol --nowarn-root" > /dev/null 2>&1 &
+}
+
+stop_gazebo() { pkill -f "gz sim"; }
+stop_ardupilot() { pkill -f "sim_vehicle"; pkill -f "mavproxy"; }
+stop_mavros() { pkill -f "mavros_node"; }
+stop_qgc() { pkill -f "qgroundcontrol"; }
+
+stop_all() {
     pkill -f "gz sim"
-    echo "Gazebo stopped"
-}
-
-stop_ardupilot() {
     pkill -f "sim_vehicle"
-    pkill -f "xterm.*sim_vehicle"
-    echo "ArduPilot stopped"
-}
-
-stop_mavros() {
+    pkill -f "mavproxy"
     pkill -f "mavros_node"
-    echo "MAVROS stopped"
+    pkill -f "QGroundControl"
+    echo "All components stopped."
 }
 
-# Start only MAVROS (for hardware testing)
+# Start only MAVROS 
 start_hardware() {
     echo "Starting MAVROS for hardware connection..."
     echo "Make sure your flight controller is connected!"
