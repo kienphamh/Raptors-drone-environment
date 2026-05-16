@@ -7,6 +7,7 @@ A Docker development environment for the Raptors Drone Team. It bundles ROS2 (Ja
 - Gazebo (gz sim harmonic) with ArduPilot Gazebo plugin
 - ArduPilot (SITL) cloned and built inside the image
 - MAVROS and MAVProxy installed (with GeographicLib datasets)
+- QGroundControl pre-installed and configured to run as a non-root user (`ardupilot`)
 - Convenience aliases and helper scripts in the `aliases/` directory
 - X11 forwarding support for GUI tools and Gazebo
 
@@ -40,6 +41,17 @@ docker exec -it raptors-drone-dev bash
 
 Run `help` or `h` inside the container to list provided helper aliases.
 
+## Verifying Installation
+Once inside the container, test the setup with:
+```bash
+start_gazebo
+start_ardupilot
+start_qgc
+start_mavros
+status
+# Run these command on separate terminals
+```
+
 ## Common commands (aliases)
 
 - `start_ardupilot` — run ArduPilot SITL with Gazebo
@@ -52,9 +64,6 @@ Run `help` or `h` inside the container to list provided helper aliases.
 - `build` / `rebuild` — `colcon` helpers for building the ROS2 workspace
 
 See the `.devcontainer/aliases/` directory for the full command reference.
-
-## Customization
-- To enable GPU usage for Gazebo, uncomment the last 3 lines in `docker-compose.yml`.
 
 ## Development workflow
 
