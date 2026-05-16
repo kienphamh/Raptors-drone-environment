@@ -24,6 +24,7 @@ A Docker development environment for the Raptors Drone Team. It bundles ROS2 (Ja
 1. Prepare X11 forwarding on the host:
 
 ```bash
+cd .devcontainer/
 sudo bash ./setup-x11.sh
 ```
 
