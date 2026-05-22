@@ -99,9 +99,21 @@ RUN apt-get update && apt-get install -y \
     libxslt1-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install wxPython for MAVProxy GUI
+# Required build dependencies for source compilation
+RUN apt-get update && apt-get install -y \
+    libgtk-3-dev \
+    libsdl2-dev \
+    libnotify-dev \
+    libxtst-dev \
+    libxss-dev \
+    libxxf86vm-dev \
+    libsm-dev \
+    pkg-config \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Then install from mirror
 RUN pip3 install --break-system-packages \
-    -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04 \
     wxPython
 
 # Mavproxy
