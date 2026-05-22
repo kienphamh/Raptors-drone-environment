@@ -114,7 +114,6 @@ RUN apt-get update && apt-get install -y \
 
 # Then install from mirror
 RUN pip3 install --break-system-packages \
-    -i https://pypi.tuna.tsinghua.edu.cn/simple \
     wxPython
 
 # Mavproxy
