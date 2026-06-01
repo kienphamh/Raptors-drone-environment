@@ -147,6 +147,11 @@ RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git . 
     && git checkout $LATEST_TAG \
     && Tools/environment_install/install-prereqs-ubuntu.sh -y
 
+# Precompile ArduPilot for SITL
+RUN cd /opt/ardupilot \
+    && ./waf configure --board sitl \
+    && ./waf build --target bin/arducopter
+
 # Add ArduPilot tools to PATH
 ENV PATH="/opt/ardupilot/Tools/autotest:${PATH}"
 ENV PATH="/usr/lib/ccache:${PATH}"
@@ -179,6 +184,7 @@ ENV FCU_URL="udp://:14551@"
 # Set display for X11
 ENV DISPLAY=:0
 ENV QT_X11_NO_MITSHM=1
+ENV QT_QPA_PLATFORM=xcb
 
 RUN echo '#!/bin/bash\n\
 set -e\n\
