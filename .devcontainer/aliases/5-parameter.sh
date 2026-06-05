@@ -15,8 +15,8 @@ set_param() {
         echo "Example: set_param WPNAV_SPEED 500"
         return 1
     fi
-    ros2 service call /mavros/param/set mavros_msgs/srv/ParamSet \
-        "{param_id: '$1', value: {integer: $2, real: 0.0}}"
+    ros2 service call /mavros/param/set_v2 mavros_msgs/srv/ParamSetV2 \
+        "{param_id: '$1', value: {type: 2, integer_value: $2}}"
 }
 
 save_params() {
