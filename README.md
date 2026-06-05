@@ -64,13 +64,14 @@ status
 
 ## Common commands (aliases)
 
-- `start_ardupilot` — run ArduPilot SITL with Gazebo
-- `start_gazebo` — start Gazebo (gz-sim)
-- `start_mavros` — start the MAVROS node
-- `arm` / `disarm` — arm/disarm via MAVROS
-- `takeoff <alt>` / `land` — basic flight commands
-- `goto <lat> <lon> [alt]` — send a waypoint
-- `record [name]` / `playback <name>` — ros2 bag helpers
+- `start_ardupilot`: run ArduPilot SITL with Gazebo
+- `start_gazebo`: start Gazebo (gz-sim)
+- `start_mavros`: start the MAVROS node
+- `arm` / `disarm`: arm/disarm via MAVROS
+- `takeoff <alt>` / `land`: basic flight commands
+- `arm_and_takeoff <alt>`: arm and takeoff in one step
+- `goto <lat> <lon> [alt]`: send a waypoint
+- `record [name]` / `playback <name>`: ros2 bag helpers
 - `build` / `rebuild` — `colcon` helpers for building the ROS2 workspace
 
 See the `.devcontainer/aliases/` directory for the full command reference.
@@ -101,6 +102,24 @@ If Gazebo fails to open or shows display errors, the QT platform may need to be 
 ```bash
 export QT_QPA_PLATFORM=xcb
 start_gazebo
+```
+
+### Auto-disarm before takeoff
+If the drone disarms itself before you can take off, use the combined command:
+```bash
+arm_and_takeoff <altitude>
+```
+This sets `DISARM_DELAY` to 0 before arming, eliminating the race condition.
+
+### Pre-arm checks failing in simulation
+If the drone refuses to arm due to pre-arm checks:
+```bash
+disable_safety_checks
+arm_and_takeoff <altitude>
+```
+To restore safety checks after testing:
+```bash
+reenable_safety_checks
 ```
 
 ### NVIDIA GPU passthrough issues
