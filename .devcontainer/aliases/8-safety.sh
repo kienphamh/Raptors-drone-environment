@@ -10,15 +10,15 @@ alias STOP='EMERGENCY_STOP'
 
 disable_safety_checks() {
     echo "WARNING: Disabling pre-arm and safety checks..."
-    ros2 service call /mavros/param/set mavros_msgs/srv/ParamSet "{param_id: 'ARMING_CHECK', value: {integer: 0, real: 0.0}}"
-    ros2 service call /mavros/param/set mavros_msgs/srv/ParamSet "{param_id: 'DISARM_DELAY', value: {integer: 0, real: 0.0}}"
-    ros2 service call /mavros/param/set mavros_msgs/srv/ParamSet "{param_id: 'FS_EKF_THRESH', value: {integer: 0, real: 0.0}}"
+    set_param ARMING_CHECK 0
+    set_param DISARM_DELAY 0
     echo "Safety checks disabled!"
 }
 
 reenable_safety_checks() {
     echo "Enabling safety checks..."
-    ros2 service call /mavros/param/set mavros_msgs/srv/ParamSet "{param_id: 'ARMING_CHECK', value: {integer: 1, real: 0.0}}"
+    set_param ARMING_CHECK 1
+    set_param DISARM_DELAY 10
     echo "Safety checks re-enabled!"
 }
 
