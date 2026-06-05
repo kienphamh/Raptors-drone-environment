@@ -25,6 +25,19 @@ takeoff() {
     ros2 service call /mavros/cmd/takeoff mavros_msgs/srv/CommandTOL "{altitude: $1}"
 }
 
+arm_and_takeoff() {
+    if [ -z "$1" ]; then
+        echo "Usage: arm_and_takeoff <altitude_in_meters>"
+        return 1
+    fi
+    echo "Setting DISARM_DELAY to 0 to prevent auto-disarm..."
+    set_param DISARM_DELAY 0
+    echo "Arming..."
+    ros2 service call /mavros/cmd/arming mavros_msgs/srv/CommandBool "{value: true}"
+    echo "Taking off to $1 m..."
+    ros2 service call /mavros/cmd/takeoff mavros_msgs/srv/CommandTOL "{altitude: $1}"
+}
+
 # Velocity control
 vel_linear() {
     local x=${1:-0.0}
