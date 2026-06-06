@@ -5,7 +5,8 @@ start_ardupilot() {
     cd $ARDUPILOT_HOME/ArduCopter
     sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console \
         --out=udp:127.0.0.1:14550 \
-        --out=udp:127.0.0.1:14551
+        --out=udp:127.0.0.1:14551 \
+        --no-rebuild
 }
 
 start_gazebo() {
