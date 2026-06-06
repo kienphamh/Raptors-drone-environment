@@ -19,7 +19,7 @@ A Docker development environment for the Raptors Drone Team. It bundles ROS2 (Ja
 - [aliases/](aliases/): convenience scripts and command aliases used in the container
 - [workspace/src](workspace/src): host-mounted ROS2 workspace for your packages
 - [docker-compose.yml](docker-compose.yml): compose service and volume configuration with Intel/AMD GPU, this is the default
-- [docker-compose.nvidia.yml](docker-compose.nvidia.yml): compose override for NVIDIA GPU passthrough via CDI
+- [docker-compose-nvidia.yml](docker-compose-nvidia.yml): compose override for NVIDIA GPU passthrough via CDI
 
 ## Quickstart
 
@@ -40,7 +40,7 @@ docker compose up -d
 **NVIDIA dedicated GPU:**
 ```bash
 docker compose build
-docker compose -f docker-compose.yml -f docker-compose.nvidia.yml up -d
+docker compose -f docker-compose.yml -f docker-compose-nvidia.yml up -d
 ```
 
 3. Enter the running container shell:
@@ -137,7 +137,7 @@ nvidia-ctk cdi list
 ```
 
 3. If CDI is not supported, use the legacy method in
-   `docker-compose.nvidia.yml`:
+   `docker-compose-nvidia.yml`:
 ```yaml
 deploy:
   resources:
