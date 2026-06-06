@@ -147,6 +147,17 @@ RUN git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git . 
     && git checkout $LATEST_TAG \
     && Tools/environment_install/install-prereqs-ubuntu.sh -y
 
+# Switch to root temporarily to install Python build dependencies
+USER root
+RUN pip3 install --break-system-packages \
+    future \
+    empy \
+    pexpect
+
+# Switch back to ardupilot user for compilation
+USER ardupilot
+WORKDIR /opt/ardupilot
+
 # Precompile ArduPilot for SITL
 RUN cd /opt/ardupilot \
     && ./waf configure --board sitl \
@@ -163,12 +174,6 @@ WORKDIR /opt
 
 # Configure Git for root user
 RUN git config --global --add safe.directory /opt/ardupilot
-
-# Install ArduPilot Python build dependencies for root user
-RUN pip3 install --break-system-packages \
-    future \
-    empy \
-    pexpect
 
 WORKDIR /workspace
 
