@@ -117,9 +117,11 @@ RUN pip3 install --break-system-packages \
     wxPython
 
 # Mavproxy
-RUN pip3 install --break-system-packages \
-    MAVProxy \
-    pymavlink
+RUN apt-get update && apt-get install -y --no-install-recommends python3-venv \
+ && python3 -m venv /opt/mavproxy-venv \
+ && /opt/mavproxy-venv/bin/pip install --no-cache-dir MAVProxy pymavlink \
+ && ln -s /opt/mavproxy-venv/bin/mavproxy.py /usr/local/bin/mavproxy.py \
+ && rm -rf /var/lib/apt/lists/*
 
 # Ardupilot and its environment
 # Create non-root user
