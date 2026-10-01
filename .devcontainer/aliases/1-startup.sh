@@ -29,12 +29,11 @@ start_qgc() {
         return 1
     fi
 
-    # Give the 'video' group access to the socket (Safer than 777)
     chown :video /tmp/.X11-unix/X0 2>/dev/null
     chmod 660 /tmp/.X11-unix/X0 2>/dev/null
-    
-    echo "Launching QGC on $DISPLAY..."
-    su - ardupilot -c "export DISPLAY=$DISPLAY; qgroundcontrol --nowarn-root" > /dev/null 2>&1 &
+
+    echo "Launching QGC on $DISPLAY... (log: /tmp/qgc.log)"
+    su - ardupilot -c "export DISPLAY=$DISPLAY; qgroundcontrol" > /tmp/qgc.log 2>&1 &
 }
 
 stop_gazebo() { pkill -f "gz sim"; }
